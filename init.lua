@@ -87,11 +87,12 @@ P.S. You can delete this when you're done too. It's your config now! :)
 -- Set <space> as the leader key
 -- See `:help mapleader`
 --  NOTE: Must happen before plugins are loaded (otherwise wrong leader will be used)
+vim.opt.clipboard:append 'unnamedplus'
 vim.g.mapleader = ' '
 vim.g.maplocalleader = ' '
 
 -- Set to true if you have a Nerd Font installed and selected in the terminal
-vim.g.have_nerd_font = false
+vim.g.have_nerd_font = true
 
 -- [[ Setting options ]]
 -- See `:help vim.o`
@@ -165,7 +166,37 @@ vim.o.scrolloff = 10
 -- instead raise a dialog asking if you wish to save the current file(s)
 -- See `:help 'confirm'`
 vim.o.confirm = true
+-- vim.api.nvim_set_keymap('n', '<leader>tt', ':botright new | resize 10 | terminal<CR>i', { desc = 'Open terminal in the bottom' })
 
+local term_buf = nil
+local term_win = nil
+
+vim.keymap.set('n', '<leader>tt', function()
+  -- If terminal window exists and is valid, close it
+  if term_win and vim.api.nvim_win_is_valid(term_win) then
+    vim.api.nvim_win_close(term_win, true)
+    term_win = nil
+    return
+  end
+
+  -- Create terminal buffer if it does not exist
+  if not term_buf or not vim.api.nvim_buf_is_valid(term_buf) then
+    vim.cmd 'botright split'
+    vim.cmd 'resize 10'
+    vim.cmd 'terminal'
+    term_win = vim.api.nvim_get_current_win()
+    term_buf = vim.api.nvim_get_current_buf()
+  else
+    -- Reopen existing terminal buffer
+    vim.cmd 'botright split'
+    vim.cmd 'resize 10'
+    vim.api.nvim_set_current_buf(term_buf)
+    term_win = vim.api.nvim_get_current_win()
+  end
+
+  -- Enter insert mode automatically
+  vim.cmd 'startinsert'
+end, { desc = 'Toggle terminal below' })
 -- [[ Basic Keymaps ]]
 --  See `:help vim.keymap.set()`
 
@@ -271,6 +302,34 @@ require('lazy').setup({
   -- options to `gitsigns.nvim`.
   --
   -- See `:help gitsigns` to understand what the configuration keys do
+  {
+    'rebelot/kanagawa.nvim',
+    priority = 1000, -- make sure it loads early
+    config = function()
+      require('kanagawa').setup {
+        -- optional settings
+        undercurl = true,
+        commentStyle = { italic = true },
+        keywordStyle = { italic = true },
+        statementStyle = { bold = true },
+        transparent = false,
+        terminalColors = true,
+        dimInactive = false,
+        theme = 'lotus', -- one of the builtin variants
+      }
+      vim.cmd 'colorscheme kanagawa'
+    end,
+  },
+  {
+    'tiagovla/tokyodark.nvim',
+    opts = {
+      -- custom options here
+    },
+    config = function(_, opts)
+      require('tokyodark').setup(opts) -- calling setup is optional
+      vim.cmd [[colorscheme tokyodark]]
+    end,
+  },
   { -- Adds git related signs to the gutter, as well as utilities for managing changes
     'lewis6991/gitsigns.nvim',
     opts = {
@@ -281,6 +340,27 @@ require('lazy').setup({
         topdelete = { text = '‾' },
         changedelete = { text = '~' },
       },
+    },
+  },
+  {
+    'github/copilot.vim',
+    lazy = false, -- load at startup so commands are available
+    cmd = { 'Copilot', 'Copilot setup', 'Copilot status' }, -- ensure lazy.nvim knows these commands trigger plugin
+    config = function()
+      vim.g.copilot_no_tab_map = true
+      vim.g.copilot_assume_mapped = true
+      vim.api.nvim_set_keymap('i', '<C-l>', 'copilot#Accept("<CR>")', { expr = true, silent = true })
+    end,
+  },
+  {
+    'CopilotC-Nvim/CopilotChat.nvim',
+    lazy = false,
+    dependencies = {
+      { 'nvim-lua/plenary.nvim', branch = 'master' },
+    },
+    build = 'make tiktoken',
+    opts = {
+      -- See Configuration section for options
     },
   },
 
@@ -941,8 +1021,9 @@ require('lazy').setup({
   { -- Highlight, edit, and navigate code
     'nvim-treesitter/nvim-treesitter',
     build = ':TSUpdate',
-    main = 'nvim-treesitter.configs', -- Sets main module to use for opts
+    -- main = 'nvim-treesitter.configs', -- Sets main module to use for opts
     -- [[ Configure Treesitter ]] See `:help nvim-treesitter`
+    main = 'nvim-treesitter.config', -- Sets main module to use for opts
     opts = {
       ensure_installed = { 'bash', 'c', 'diff', 'html', 'lua', 'luadoc', 'markdown', 'markdown_inline', 'query', 'vim', 'vimdoc' },
       -- Autoinstall languages that are not installed
@@ -974,12 +1055,28 @@ require('lazy').setup({
   --  Uncomment any of the lines below to enable them (you will need to restart nvim).
   --
   -- require 'kickstart.plugins.debug',
-  -- require 'kickstart.plugins.indent_line',
-  -- require 'kickstart.plugins.lint',
-  -- require 'kickstart.plugins.autopairs',
-  -- require 'kickstart.plugins.neo-tree',
-  -- require 'kickstart.plugins.gitsigns', -- adds gitsigns recommend keymaps
+  require 'kickstart.plugins.indent_line',
+  require 'kickstart.plugins.lint',
+  require 'kickstart.plugins.autopairs',
+  require 'kickstart.plugins.neo-tree',
+  vim.keymap.set('n', '<leader>e', '<Cmd>Neotree<CR>'),
+  {
+    'luxvim/nvim-luxterm',
+    config = function()
+      require('luxterm').setup {
+        -- Optional configuration
+        manager_width = 0.8,
+        manager_height = 0.8,
+        preview_enabled = true,
+        auto_hide = true,
+        keymaps = {
+          toggle_manager = '<C-/>',
+        },
+      }
+    end,
+  },
 
+  -- require 'kickstart.plugins.gitsigns', -- adds gitsigns recommend keymaps
   -- NOTE: The import below can automatically add your own plugins, configuration, etc from `lua/custom/plugins/*.lua`
   --    This is the easiest way to modularize your config.
   --
@@ -1011,6 +1108,9 @@ require('lazy').setup({
     },
   },
 })
+vim.keymap.set('n', '<leader>tc', function()
+  require('telescope.builtin').colorscheme { enable_preview = true }
+end, { desc = 'Pick colorscheme' })
 
 -- The line beneath this is called `modeline`. See `:help modeline`
 -- vim: ts=2 sts=2 sw=2 et
