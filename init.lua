@@ -478,20 +478,119 @@ require('lazy').setup({
     event = 'VimEnter',
     config = function()
       require('dashboard').setup {
-        theme = 'hyper',
+        theme = 'doom',
         config = {
-          week_header = {
-            enable = true,
+          header = {
+            '',
+            '',
+            '',
+            '███╗   ██╗███████╗ ██████╗ ██╗   ██╗██╗███╗   ███╗',
+            '████╗  ██║██╔════╝██╔═══██╗██║   ██║██║████╗ ████║',
+            '██╔██╗ ██║█████╗  ██║   ██║██║   ██║██║██╔████╔██║',
+            '██║╚██╗██║██╔══╝  ██║   ██║╚██╗ ██╔╝██║██║╚██╔╝██║',
+            '██║ ╚████║███████╗╚██████╔╝ ╚████╔╝ ██║██║ ╚═╝ ██║',
+            '╚═╝  ╚═══╝╚══════╝ ╚═════╝   ╚═══╝  ╚═╝╚═╝     ╚═╝',
+            '',
+            '    [ TIP: Press <leader>ch to open cheatsheet ]    ',
+            '',
+            '',
           },
-          shortcut = {
-            { desc = '󰊳 Update', group = '@property', action = 'Lazy update', key = 'u' },
-            { desc = ' Files', group = 'Label', action = 'Telescope find_files', key = 'f' },
-            { desc = ' Projects', group = 'DiagnosticHint', action = 'Telescope projects', key = 'p' },
+          center = {
+            {
+              icon = '  ',
+              icon_hl = 'Title',
+              desc = 'Find File           ',
+              desc_hl = 'String',
+              key = 'f',
+              key_hl = 'Number',
+              key_format = ' %s',
+              action = 'Telescope find_files',
+            },
+            {
+              icon = '  ',
+              icon_hl = 'Title',
+              desc = 'Recent Files        ',
+              desc_hl = 'String',
+              key = 'r',
+              key_hl = 'Number',
+              key_format = ' %s',
+              action = 'Telescope oldfiles',
+            },
+            {
+              icon = '  ',
+              icon_hl = 'Title',
+              desc = 'Find Project        ',
+              desc_hl = 'String',
+              key = 'p',
+              key_hl = 'Number',
+              key_format = ' %s',
+              action = 'Telescope projects',
+            },
+            {
+              icon = '  ',
+              icon_hl = 'Title',
+              desc = 'Find Text           ',
+              desc_hl = 'String',
+              key = 'g',
+              key_hl = 'Number',
+              key_format = ' %s',
+              action = 'Telescope live_grep',
+            },
+            {
+              icon = '  ',
+              icon_hl = 'Title',
+              desc = 'Cheatsheet          ',
+              desc_hl = 'String',
+              key = 'c',
+              key_hl = 'Number',
+              key_format = ' %s',
+              action = 'Cheatsheet',
+            },
+            {
+              icon = '  ',
+              icon_hl = 'Title',
+              desc = 'Update Plugins      ',
+              desc_hl = 'String',
+              key = 'u',
+              key_hl = 'Number',
+              key_format = ' %s',
+              action = 'Lazy update',
+            },
+            {
+              icon = '  ',
+              icon_hl = 'Title',
+              desc = 'Quit                ',
+              desc_hl = 'String',
+              key = 'q',
+              key_hl = 'Number',
+              key_format = ' %s',
+              action = 'qa',
+            },
           },
+          footer = function()
+            local stats = require('lazy').stats()
+            local ms = (math.floor(stats.startuptime * 100 + 0.5) / 100)
+            return {
+              '',
+              '⚡ Neovim loaded ' .. stats.loaded .. '/' .. stats.count .. ' plugins in ' .. ms .. 'ms',
+            }
+          end,
         },
       }
     end,
     dependencies = { 'nvim-tree/nvim-web-devicons' },
+  },
+
+  {
+    'sudormrfbin/cheatsheet.nvim',
+    dependencies = {
+      { 'nvim-telescope/telescope.nvim' },
+      { 'nvim-lua/popup.nvim' },
+      { 'nvim-lua/plenary.nvim' },
+    },
+    keys = {
+      { '<leader>ch', '<cmd>Cheatsheet<cr>', desc = '[C]heatsheet' },
+    },
   },
 
   {
