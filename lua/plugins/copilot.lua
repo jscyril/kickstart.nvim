@@ -17,22 +17,22 @@ return {
         ['*'] = true,
       }
 
-      -- Accept suggestion with Ctrl+Y (most reliable)
+      -- Accept suggestion with Tab (official copilot.vim method)
+      -- The fallback handles when there's no suggestion
+      vim.keymap.set('i', '<Tab>', 'copilot#Accept("<Tab>")', {
+        expr = true,
+        replace_keycodes = false,
+        silent = true,
+        desc = 'Accept Copilot suggestion or Tab',
+      })
+
+      -- Accept with Ctrl+Y as alternative
       vim.keymap.set('i', '<C-y>', 'copilot#Accept("")', {
         expr = true,
         replace_keycodes = false,
         silent = true,
         desc = 'Accept Copilot suggestion',
       })
-
-      -- Also allow Tab to accept (when suggestion is visible)
-      vim.keymap.set('i', '<Tab>', function()
-        if vim.fn['copilot#GetDisplayedSuggestion']().text ~= '' then
-          return vim.fn['copilot#Accept']('')
-        else
-          return '<Tab>'
-        end
-      end, { expr = true, silent = true, desc = 'Accept Copilot or Tab' })
 
       -- Navigate suggestions
       vim.keymap.set('i', '<C-]>', '<Plug>(copilot-next)', { silent = true, desc = 'Next Copilot suggestion' })
@@ -129,13 +129,13 @@ return {
         require('CopilotChat.integrations.telescope').pick(actions.prompt_actions())
       end, { desc = '[C]opilot [A]ctions' })
 
-      -- Visual mode - explain, fix, review, optimize
-      vim.keymap.set('v', '<leader>ce', ':CopilotChatExplain<CR>', { desc = '[C]opilot [E]xplain' })
-      vim.keymap.set('v', '<leader>cf', ':CopilotChatFix<CR>', { desc = '[C]opilot [F]ix' })
-      vim.keymap.set('v', '<leader>cr', ':CopilotChatReview<CR>', { desc = '[C]opilot [R]eview' })
-      vim.keymap.set('v', '<leader>co', ':CopilotChatOptimize<CR>', { desc = '[C]opilot [O]ptimize' })
-      vim.keymap.set('v', '<leader>cd', ':CopilotChatDocs<CR>', { desc = '[C]opilot [D]ocs' })
-      vim.keymap.set('v', '<leader>cT', ':CopilotChatTests<CR>', { desc = '[C]opilot [T]ests' })
+      -- Visual mode - explain, fix, review, optimize (use 'x' mode for visual selection)
+      vim.keymap.set('x', '<leader>ce', '<cmd>CopilotChatExplain<CR>', { desc = '[C]opilot [E]xplain' })
+      vim.keymap.set('x', '<leader>cf', '<cmd>CopilotChatFix<CR>', { desc = '[C]opilot [F]ix' })
+      vim.keymap.set('x', '<leader>cr', '<cmd>CopilotChatReview<CR>', { desc = '[C]opilot [R]eview' })
+      vim.keymap.set('x', '<leader>co', '<cmd>CopilotChatOptimize<CR>', { desc = '[C]opilot [O]ptimize' })
+      vim.keymap.set('x', '<leader>cd', '<cmd>CopilotChatDocs<CR>', { desc = '[C]opilot [D]ocs' })
+      vim.keymap.set('x', '<leader>cT', '<cmd>CopilotChatTests<CR>', { desc = '[C]opilot [T]ests' })
     end,
   },
 }

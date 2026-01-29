@@ -88,7 +88,7 @@ return {
 
       vim.diagnostic.config({
         severity_sort = true,
-        float = { border = 'rounded', source = 'if_many' },
+        float = { border = 'rounded', source = 'if_many', max_width = 80 },
         underline = { severity = vim.diagnostic.severity.ERROR },
         signs = vim.g.have_nerd_font and {
           text = {
@@ -101,17 +101,22 @@ return {
         virtual_text = {
           source = 'if_many',
           spacing = 2,
+          -- Truncate long messages to fit on screen
           format = function(diagnostic)
-            local diagnostic_message = {
-              [vim.diagnostic.severity.ERROR] = diagnostic.message,
-              [vim.diagnostic.severity.WARN] = diagnostic.message,
-              [vim.diagnostic.severity.INFO] = diagnostic.message,
-              [vim.diagnostic.severity.HINT] = diagnostic.message,
-            }
-            return diagnostic_message[diagnostic.severity]
+            local max_width = math.floor(vim.o.columns * 0.4) -- 40% of screen width
+            local message = diagnostic.message:gsub('\n', ' ') -- Remove newlines
+            if #message > max_width then
+              return message:sub(1, max_width - 3) .. '...'
+            end
+            return message
           end,
         },
       })
+
+      -- Keybinds to view full diagnostic message
+      vim.keymap.set('n', '<leader>d', vim.diagnostic.open_float, { desc = 'Show [D]iagnostic float' })
+      vim.keymap.set('n', '[d', vim.diagnostic.goto_prev, { desc = 'Previous diagnostic' })
+      vim.keymap.set('n', ']d', vim.diagnostic.goto_next, { desc = 'Next diagnostic' })
 
       local capabilities = require('blink.cmp').get_lsp_capabilities()
 
@@ -295,5 +300,72 @@ return {
         end,
       })
     end,
+  },
+
+  -- Surround (add/change/delete surrounding pairs)
+  {
+    'kylechui/nvim-surround',
+    version = '*',
+    event = 'VeryLazy',
+    opts = {},
+    -- Usage:
+    -- ys{motion}{char} - add surround (e.g., ysiw" to surround word with ")
+    -- cs{old}{new}     - change surround (e.g., cs"' to change " to ')
+    -- ds{char}         - delete surround (e.g., ds" to delete ")
+    -- S{char}          - in visual mode, surround selection
+  },
+
+  -- BQF (Better Quickfix)
+  {
+    'kevinhwang91/nvim-bqf',
+    ft = 'qf',
+    opts = {
+      auto_enable = true,
+      preview = {
+        win_height = 15,
+        win_vheight = 15,
+        delay_syntax = 50,
+        border = 'rounded',
+        show_title = true,
+      },
+      func_map = {
+        open = '<CR>',
+        openc = 'o',
+        vsplit = 'v',
+        split = 's',
+        tab = 't',
+        prevfile = '<C-p>',
+        nextfile = '<C-n>',
+        pscrollup = '<C-u>',
+        pscrolldown = '<C-d>',
+        fzffilter = 'f',
+      },
+    },
+  },
+
+  -- Portal (jump list navigation with preview)
+  {
+    'cbochs/portal.nvim',
+    dependencies = { 'cbochs/grapple.nvim' },
+    keys = {
+      { '<leader>o', '<cmd>Portal jumplist backward<cr>', desc = 'Portal backward' },
+      { '<leader>i', '<cmd>Portal jumplist forward<cr>', desc = 'Portal forward' },
+    },
+    opts = {},
+  },
+
+  -- Mini.ai (better text objects)
+  {
+    'echasnovski/mini.ai',
+    version = '*',
+    event = 'VeryLazy',
+    opts = {
+      n_lines = 500,
+      -- Extra text objects:
+      -- iq/aq - quotes
+      -- ib/ab - brackets
+      -- it/at - tags
+      -- if/af - function (via treesitter when available)
+    },
   },
 }

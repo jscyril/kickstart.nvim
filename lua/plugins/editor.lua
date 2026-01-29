@@ -17,6 +17,7 @@ return {
       },
       { 'nvim-telescope/telescope-ui-select.nvim' },
       { 'nvim-tree/nvim-web-devicons', enabled = vim.g.have_nerd_font },
+      { 'jvgrootveld/telescope-zoxide' }, -- Zoxide integration
     },
     config = function()
       require('telescope').setup({
@@ -24,11 +25,23 @@ return {
           ['ui-select'] = {
             require('telescope.themes').get_dropdown(),
           },
+          zoxide = {
+            prompt_title = '[ Zoxide ]',
+            mappings = {
+              default = {
+                action = function(selection)
+                  vim.cmd.cd(selection.path)
+                  vim.notify('Changed directory to: ' .. selection.path)
+                end,
+              },
+            },
+          },
         },
       })
 
       pcall(require('telescope').load_extension, 'fzf')
       pcall(require('telescope').load_extension, 'ui-select')
+      pcall(require('telescope').load_extension, 'zoxide')
 
       local builtin = require('telescope.builtin')
       vim.keymap.set('n', '<leader>sh', builtin.help_tags, { desc = '[S]earch [H]elp' })
@@ -41,6 +54,9 @@ return {
       vim.keymap.set('n', '<leader>sr', builtin.resume, { desc = '[S]earch [R]esume' })
       vim.keymap.set('n', '<leader>s.', builtin.oldfiles, { desc = '[S]earch Recent Files' })
       vim.keymap.set('n', '<leader><leader>', builtin.buffers, { desc = '[ ] Find existing buffers' })
+
+      -- Zoxide keymap
+      vim.keymap.set('n', '<leader>sz', '<cmd>Telescope zoxide list<cr>', { desc = '[S]earch [Z]oxide directories' })
 
       vim.keymap.set('n', '<leader>/', function()
         builtin.current_buffer_fuzzy_find(require('telescope.themes').get_dropdown({
