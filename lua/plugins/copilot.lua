@@ -8,10 +8,10 @@ return {
     lazy = false,
     config = function()
       -- IMPORTANT: These settings ensure suggestions appear
-      vim.g.copilot_no_tab_map = true  -- We'll use custom accept key
+      vim.g.copilot_no_tab_map = true -- We'll use custom accept key
       vim.g.copilot_assume_mapped = true
       vim.g.copilot_tab_fallback = ''
-      
+
       -- Enable for all filetypes
       vim.g.copilot_filetypes = {
         ['*'] = true,
@@ -79,15 +79,15 @@ return {
         },
         close = {
           normal = 'q',
-          insert = '<C-c>'
+          insert = '<C-c>',
         },
         reset = {
           normal = '<C-x>',
-          insert = '<C-x>'
+          insert = '<C-x>',
         },
         submit_prompt = {
           normal = '<CR>',
-          insert = '<C-s>'
+          insert = '<C-s>',
         },
         -- Accept diff - applies changes to original file (use from chat buffer in normal mode)
         accept_diff = {
@@ -98,18 +98,18 @@ return {
           register = '"',
         },
         show_diff = {
-          normal = 'gd'
+          normal = 'gd',
         },
         show_info = {
-          normal = 'gi'
+          normal = 'gi',
         },
         show_context = {
-          normal = 'gc'
+          normal = 'gc',
         },
       },
     },
     config = function(_, opts)
-      local chat = require('CopilotChat')
+      local chat = require 'CopilotChat'
       chat.setup(opts)
 
       -- Toggle chat
@@ -117,7 +117,7 @@ return {
 
       -- Quick chat about buffer
       vim.keymap.set('n', '<leader>cq', function()
-        local input = vim.fn.input('Quick Chat: ')
+        local input = vim.fn.input 'Quick Chat: '
         if input ~= '' then
           chat.ask(input, { selection = require('CopilotChat.select').buffer })
         end
@@ -125,7 +125,7 @@ return {
 
       -- Actions menu with Telescope
       vim.keymap.set({ 'n', 'v' }, '<leader>ca', function()
-        local actions = require('CopilotChat.actions')
+        local actions = require 'CopilotChat.actions'
         require('CopilotChat.integrations.telescope').pick(actions.prompt_actions())
       end, { desc = '[C]opilot [A]ctions' })
 

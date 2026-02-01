@@ -157,40 +157,12 @@ return {
     end,
   },
 
-  -- Custom Keybinds Cheatsheet (opens keybinds.md in floating window)
+  -- Custom Keybinds Cheatsheet (NvChad-style floating window)
   {
     'nvim-lua/plenary.nvim', -- Already a dependency, just adding hook
     config = function()
       vim.keymap.set('n', '<leader>ch', function()
-        local keybinds_path = vim.fn.stdpath('config') .. '/keybinds.md'
-        
-        -- Create floating window
-        local width = math.floor(vim.o.columns * 0.8)
-        local height = math.floor(vim.o.lines * 0.8)
-        local row = math.floor((vim.o.lines - height) / 2)
-        local col = math.floor((vim.o.columns - width) / 2)
-        
-        local buf = vim.api.nvim_create_buf(false, true)
-        local win = vim.api.nvim_open_win(buf, true, {
-          relative = 'editor',
-          width = width,
-          height = height,
-          row = row,
-          col = col,
-          style = 'minimal',
-          border = 'rounded',
-          title = '  Keybinds Cheatsheet ',
-          title_pos = 'center',
-        })
-        
-        -- Read and set keybinds.md content
-        vim.cmd('edit ' .. keybinds_path)
-        vim.bo.modifiable = false
-        vim.bo.buftype = 'nofile'
-        
-        -- Close with q or Escape
-        vim.keymap.set('n', 'q', '<cmd>close<cr>', { buffer = buf, silent = true })
-        vim.keymap.set('n', '<Esc>', '<cmd>close<cr>', { buffer = buf, silent = true })
+        require('custom.cheatsheet').open()
       end, { desc = '[C]heatsheet - Keybinds' })
     end,
   },
