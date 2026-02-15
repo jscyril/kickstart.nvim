@@ -125,7 +125,7 @@ return {
 
       -- Actions menu with Telescope
       vim.keymap.set({ 'n', 'v' }, '<leader>ca', function()
-        local actions = require 'CopilotChat.actions'
+        require('CopilotChat.integrations.telescope').pick(require('CopilotChat.actions').prompt_actions())
         require('CopilotChat.integrations.telescope').pick(actions.prompt_actions())
       end, { desc = '[C]opilot [A]ctions' })
 
