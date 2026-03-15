@@ -126,6 +126,7 @@ return {
         { '<leader>g', group = '[G]it' },
         { '<leader>x', group = 'Diagnostics' },
         { '<leader>m', group = '[M]arkdown' },
+        { '<leader>?', desc = 'Cheatsheet/Help' },
       },
     },
   },
@@ -159,12 +160,7 @@ return {
 
   -- Custom Keybinds Cheatsheet (NvChad-style floating window)
   {
-    'nvim-lua/plenary.nvim', -- Already a dependency, just adding hook
-    config = function()
-      vim.keymap.set('n', '<leader>ch', function()
-        require('custom.cheatsheet').open()
-      end, { desc = '[C]heatsheet - Keybinds' })
-    end,
+    'nvim-lua/plenary.nvim', -- Already a dependency
   },
 
   -- Spectre (search and replace)

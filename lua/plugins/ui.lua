@@ -178,14 +178,7 @@ return {
             local icon = level:match('error') and ' ' or ' '
             return ' ' .. icon .. count
           end,
-          offsets = {
-            {
-              filetype = 'neo-tree',
-              text = '  File Explorer',
-              highlight = 'Directory',
-              separator = true,
-            },
-          },
+          offsets = {},
           color_icons = true,
           show_buffer_icons = true,
           show_buffer_close_icons = true,
@@ -341,7 +334,7 @@ return {
           lualine_y = {},
           lualine_z = {},
         },
-        extensions = { 'neo-tree', 'lazy', 'trouble', 'quickfix' },
+        extensions = { 'lazy', 'trouble', 'quickfix' },
       })
     end,
   },
@@ -379,7 +372,6 @@ return {
         filetypes = {
           'help',
           'dashboard',
-          'neo-tree',
           'Trouble',
           'lazy',
           'mason',

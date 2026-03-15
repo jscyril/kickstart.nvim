@@ -14,8 +14,8 @@
 ## 📁 File Management
 | Keybind | Description |
 |---------|-------------|
-| `<leader>e` | Toggle Neo-tree file explorer |
-| `\` | Neo-tree reveal current file |
+| `<leader>e` | Open Yazi file explorer |
+| `\` | Yazi working directory |
 | `-` | Open parent directory (Oil.nvim) |
 
 ## 🪟 Window Navigation

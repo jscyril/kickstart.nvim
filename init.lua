@@ -8,6 +8,9 @@ require('core.options')
 require('core.keymaps')
 require('core.autocmds')
 
+-- Load custom modules
+require('custom.cheatsheet')
+
 -- ============================================
 -- LAZY.NVIM BOOTSTRAP
 -- ============================================

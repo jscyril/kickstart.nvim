@@ -13,13 +13,14 @@ M.keybinds = {
       { key = '<leader>d', desc = 'Show diagnostic float' },
       { key = '[d', desc = 'Previous diagnostic' },
       { key = ']d', desc = 'Next diagnostic' },
+      { key = '<leader>?', desc = 'Open Keybinds Cheatsheet' },
     },
   },
   {
     section = '📁 File Management',
     items = {
-      { key = '<leader>e', desc = 'Toggle Neo-tree file explorer' },
-      { key = '\\', desc = 'Neo-tree reveal current file' },
+      { key = '<leader>e', desc = 'Open Yazi file explorer' },
+      { key = '\\', desc = 'Yazi working directory' },
       { key = '-', desc = 'Open parent directory (Oil)' },
     },
   },

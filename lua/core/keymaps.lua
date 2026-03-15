@@ -12,6 +12,9 @@ keymap('v', '<Esc>', '<Esc>', { desc = 'Exit visual mode' })
 keymap('n', '<Esc>', '<cmd>nohlsearch<CR>', { desc = 'Clear search highlights' })
 keymap('n', '<leader>q', vim.diagnostic.setloclist, { desc = 'Open diagnostic [Q]uickfix list' })
 
+-- Cheatsheet
+keymap('n', '<leader>?', '<cmd>Cheatsheet<CR>', { desc = 'Open Keybinds Cheatsheet' })
+
 -- ============================================
 -- WINDOW NAVIGATION
 -- ============================================
